@@ -8,32 +8,32 @@ datasource db {
 }
 
 model User {
-  id                   String        @id @default(uuid())
-  name                 String
-  email                String        @unique
-  cpf                  String        @unique
-  cnpj                 String?       @unique
-  password             String
-  userType             String? // "common" ou "merchant"
-  wallet               Wallet?
-  transactionsSent     Transaction[] @relation("Sender")
-  transactionsReceived Transaction[] @relation("Receiver")
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  cpf      String  @unique
+  cnpj     String? @unique
+  password String
+  userType String? // "common" ou "merchant"
+  wallet   Wallet?
 }
 
 model Wallet {
-  id      String @id @default(uuid())
-  balance Float  @default(0.0)
-  userId  String @unique
-  user    User   @relation(fields: [userId], references: [id])
+  id                   String        @id @default(uuid())
+  balance              Float         @default(0.0)
+  userId               String        @unique
+  user                 User          @relation(fields: [userId], references: [id])
+  transactionsSent     Transaction[] @relation("SenderWallet")
+  transactionsReceived Transaction[] @relation("ReceiverWallet")
 }
 
 model Transaction {
-  id         String   @id @default(uuid())
-  amount     Float
-  createdAt  DateTime @default(now())
-  status     String // "pending", "completed", "reversed"
-  senderId   String
-  receiverId String
-  sender     User     @relation("Sender", fields: [senderId], references: [id])
-  receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
+  id               String   @id @default(uuid())
+  amount           Float
+  createdAt        DateTime @default(now())
+  status           String // "pending", "completed", "reversed"
+  senderWalletId   String
+  receiverWalletId String
+  senderWallet     Wallet   @relation("SenderWallet", fields: [senderWalletId], references: [id])
+  receiverWallet   Wallet   @relation("ReceiverWallet", fields: [receiverWalletId], references: [id])
 }

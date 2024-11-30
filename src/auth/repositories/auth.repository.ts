@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../services/prisma.service';
-import { RegisterDto } from '../dto/RegisterDto';
+import { UserDto } from '../dto/UserDto';
 @Injectable()
 export class AuthRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async FindUserByEmail(emailDto: RegisterDto) {
+  async FindUserByEmail(emailDto: UserDto) {
     return await this.prismaService.user.findUnique({
       where: {
         email: emailDto.email,
@@ -13,7 +13,7 @@ export class AuthRepository {
     });
   }
 
-  async FindUserByCpf(cpfDto: RegisterDto) {
+  async FindUserByCpf(cpfDto: UserDto) {
     return await this.prismaService.user.findUnique({
       where: {
         cpf: cpfDto.cpf,
@@ -21,7 +21,7 @@ export class AuthRepository {
     });
   }
 
-  async FindUserByCnpj(cnpjDto: RegisterDto) {
+  async FindUserByCnpj(cnpjDto: UserDto) {
     if (!cnpjDto.cnpj) {
       return null;
     }
@@ -32,7 +32,7 @@ export class AuthRepository {
     });
   }
 
-  async createUser(createUserDto: RegisterDto) {
+  async createUser(createUserDto: UserDto) {
     const { userType, name, email, password, cpf, cnpj } = createUserDto;
 
     try {

@@ -1,6 +1,6 @@
 import { IsString, IsEmail, MinLength, IsOptional } from 'class-validator';
 import { IsCpf, IsCnpj } from '../utils/validations';
-export class RegisterDto {
+export class UserDto {
   userType?: string;
 
   @IsString({ message: 'O nome deve ser uma string!' })
