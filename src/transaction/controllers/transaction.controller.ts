@@ -2,7 +2,7 @@ import { Controller, Post, Req, Body } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { TransactionService } from '../services/transaction.service';
-import { UserDto } from 'src/auth/dto/UserDto';
+import { DepositDto } from '../dto/DepositDto';
 
 interface Request {
   user: {
@@ -31,15 +31,33 @@ export class TransactionController {
   }
 
   @Post('deposit')
-  async deposit(@Req() req: Request, @Body() body: UserDto) {
-    const depositCreated = await this.transactionService.deposit(
-      req.user.id,
-      Number(body.amount),
-    );
+  async deposit(@Req() req: Request, @Body() body: DepositDto) {
+    try {
+      await this.transactionService.deposit(req.user.id, Number(body.amount));
 
-    return {
-      message: 'Depósito efetuado!',
-      depositCreated,
-    };
+      return {
+        message: 'Depósito efetuado com sucesso!',
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  @Post('transfer')
+  async transfer(
+    @Req() req: Request,
+    @Body() body: { receiverId: string; amount: number },
+  ) {
+    try {
+      await this.transactionService.transfer(
+        req.user.id,
+        body.receiverId,
+        body.amount,
+      );
+      return {
+        message: 'Transferência realizada com sucesso!',
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }

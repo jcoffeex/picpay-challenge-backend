@@ -15,6 +15,23 @@ export class TransactionService {
   }
 
   async deposit(userId: string, amount: number) {
-    return await this.transactionRepository.deposit(userId, amount);
+    const result = await this.transactionRepository.deposit(userId, amount);
+    return {
+      wallet: result.updatedWallet,
+      transaction: result.transaction,
+    };
+  }
+
+  async transfer(senderId: string, receiverId: string, amount: number) {
+    const result = await this.transactionRepository.transfer(
+      senderId,
+      receiverId,
+      amount,
+    );
+    return {
+      senderWallet: result.updatedSenderWallet,
+      receiverWallet: result.updatedReceiverWallet,
+      transaction: result.transaction,
+    };
   }
 }
