@@ -45,7 +45,7 @@ export class TransactionController {
   @Post('transfer')
   async transfer(
     @Req() req: Request,
-    @Body() body: { receiverId: string; amount: number },
+    @Body() body: { receiverId: string; amount: number; cnpj: string },
   ) {
     try {
       await this.transactionService.transfer(
@@ -57,7 +57,7 @@ export class TransactionController {
         message: 'Transferência realizada com sucesso!',
       };
     } catch (error) {
-      throw new Error(error.message);
+      throw error;
     }
   }
 }

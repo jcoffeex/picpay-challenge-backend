@@ -14,7 +14,9 @@ export class UserService {
   async registerUser(registerDto: UserDto) {
     const EmailExists = await this.authRepository.FindUserByEmail(registerDto);
     const cpfExists = await this.authRepository.FindUserByCpf(registerDto);
-    const cnpjExists = await this.authRepository.FindUserByCnpj(registerDto);
+    const cnpjExists = await this.authRepository.FindUserByCnpj(
+      registerDto.cnpj,
+    );
 
     if (EmailExists) {
       throw new HttpException('Email já cadastrado.', HttpStatus.CONFLICT);

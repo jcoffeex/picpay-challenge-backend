@@ -21,13 +21,21 @@ export class AuthRepository {
     });
   }
 
-  async FindUserByCnpj(cnpjDto: UserDto) {
-    if (!cnpjDto.cnpj) {
+  async FindUserByCnpj(cnpj: string) {
+    if (!cnpj) {
       return null;
     }
     return await this.prismaService.user.findUnique({
       where: {
-        cnpj: cnpjDto.cnpj,
+        cnpj,
+      },
+    });
+  }
+
+  async FindUserById(userId: string) {
+    return await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
       },
     });
   }

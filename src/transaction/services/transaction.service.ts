@@ -1,9 +1,13 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { TransactionRepository } from '../repositories/transaction.repository';
+import { AuthRepository } from 'src/auth/repositories/auth.repository';
 
 @Injectable()
 export class TransactionService {
-  constructor(private readonly transactionRepository: TransactionRepository) {}
+  constructor(
+    private readonly transactionRepository: TransactionRepository,
+    private readonly authRepository: AuthRepository,
+  ) {}
   async createWallet(userId: string) {
     const existingWallet =
       await this.transactionRepository.existingWallet(userId);
@@ -23,6 +27,16 @@ export class TransactionService {
   }
 
   async transfer(senderId: string, receiverId: string, amount: number) {
+    const sender = await this.authRepository.FindUserById(senderId);
+
+    if (!sender) {
+      throw new ConflictException('Usuário remetente não encontrado.');
+    }
+
+    if (sender.cnpj) {
+      throw new ConflictException('Lojistas não podem fazer transferências.');
+    }
+
     const result = await this.transactionRepository.transfer(
       senderId,
       receiverId,

@@ -18,6 +18,4 @@ export class UserDto {
   @IsOptional()
   @IsCnpj({ message: 'Não é um cnpj válido!' })
   cnpj?: string;
-
-  amount?: number;
 }
