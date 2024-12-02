@@ -1,7 +1,10 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { TransactionRepository } from '../repositories/transaction.repository';
 import { AuthRepository } from 'src/auth/repositories/auth.repository';
-
 @Injectable()
 export class TransactionService {
   constructor(
@@ -27,6 +30,14 @@ export class TransactionService {
   }
 
   async transfer(senderId: string, receiverId: string, amount: number) {
+    const authorizeTransaction = true;
+
+    if (!authorizeTransaction) {
+      throw new UnauthorizedException(
+        'Transferência não autorizada pelo serviço externo.',
+      );
+    }
+
     const sender = await this.authRepository.FindUserById(senderId);
 
     if (!sender) {
